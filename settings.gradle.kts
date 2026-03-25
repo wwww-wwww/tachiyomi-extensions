@@ -1,8 +1,11 @@
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
 /**
  * Add or remove modules to load as needed for local development here.
  */
-loadAllIndividualExtensions()
-// loadIndividualExtension("all", "mangadex")
+//loadAllIndividualExtensions()
+ loadIndividualExtension("all", "yuri")
 
 /**
  * ===================================== COMMON CONFIGURATION ======================================
