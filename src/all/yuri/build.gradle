@@ -1,8 +1,0 @@
-ext {
-    extName = 'Yuri'
-    extClass = '.Yuri'
-    extVersionCode = 29
-    isNsfw = true
-}
-
-apply from: "$rootDir/common.gradle"
