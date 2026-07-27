@@ -5,24 +5,29 @@
     "contact": {
         "website": "https://yuri.grass.moe"
     },
-    "extensions": [
-        {
-            "name": "Tachiyomi: Yuri",
-            "pkg": "eu.kanade.tachiyomi.extension.all.yuri",
-            "apk": "tachiyomi-all.yuri-v1.4.29-release.apk",
-            "lang": "all",
-            "code": 29,
-            "version": "1.4.29",
-            "nsfw": 1,
-            "sources": [
-                {
-                    "name": "Yuri",
-                    "lang": "all",
-                    "id": "323910630341645598",
-                    "baseUrl": "https://yuri.grass.moe",
-                    "versionId": 1
-                }
-            ]
-        }
-    ]
+    "extensionList": {
+        "extensions": [
+            {
+                "name": "Yuri",
+                "packageName": "eu.kanade.tachiyomi.extension.all.yuri",
+                "resources": {
+                    "apkUrl": "https://github.com/wwww-wwww/tachiyomi-extensions/raw/repo/apk/tachiyomi-all.yuri-v1.4.30-release.apk",
+                    "iconUrl": "https://github.com/wwww-wwww/tachiyomi-extensions/raw/repo/icon/eu.kanade.tachiyomi.extension.all.yuri.png",
+                    "jarUrl": "https://github.com/wwww-wwww/tachiyomi-extensions/raw/repo/jar/tachiyomi-all.yuri-v1.4.30-release.apk"
+                },
+                "extensionLib": "1.4",
+                "versionCode": "30",
+                "versionName": "1.4.30",
+                "contentWarning": "CONTENT_WARNING_MIXED",
+                "sources": [
+                    {
+                        "id": "323910630341645598",
+                        "name": "Yuri",
+                        "language": "all",
+                        "homeUrl": "https://yuri.grass.moe"
+                    }
+                ]
+            }
+        ]
+    }
 }
