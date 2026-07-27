@@ -13,7 +13,7 @@
                 "resources": {
                     "apkUrl": "https://github.com/wwww-wwww/tachiyomi-extensions/raw/repo/apk/tachiyomi-all.yuri-v1.4.30-release.apk",
                     "iconUrl": "https://github.com/wwww-wwww/tachiyomi-extensions/raw/repo/icon/eu.kanade.tachiyomi.extension.all.yuri.png",
-                    "jarUrl": "https://github.com/wwww-wwww/tachiyomi-extensions/raw/repo/jar/tachiyomi-all.yuri-v1.4.30-release.apk"
+                    "jarUrl": "https://github.com/wwww-wwww/tachiyomi-extensions/raw/repo/jar/tachiyomi-all.yuri-v1.4.30.jar"
                 },
                 "extensionLib": "1.4",
                 "versionCode": "30",
