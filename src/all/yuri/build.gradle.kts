@@ -13,6 +13,7 @@ keiyoushi {
     source {
         lang = "en"
         baseUrl = "https://yuri.grass.moe"
+        id = 323910630341645598
     }
 
     deeplink {
