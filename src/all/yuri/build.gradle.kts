@@ -11,7 +11,7 @@ keiyoushi {
     libVersion = "1.4"
 
     source {
-        lang = "en"
+        lang = "all"
         baseUrl = "https://yuri.grass.moe"
         id = 323910630341645598
     }
