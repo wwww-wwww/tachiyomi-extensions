@@ -33,6 +33,8 @@ abstract class Yuri : HttpSource() {
     override val supportsLatest = false
 //    override val lang = "all"
 
+    override fun getMangaUrl(manga: SManga): String = baseUrl + manga.url
+
     override fun popularMangaRequest(page: Int): Request = GET("$baseUrl/api/all.json")
 
     override fun fetchPopularManga(page: Int): Observable<MangasPage> = client.newCall(popularMangaRequest(page))
