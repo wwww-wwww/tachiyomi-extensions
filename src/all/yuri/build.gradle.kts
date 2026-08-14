@@ -6,8 +6,8 @@ plugins {
 
 keiyoushi {
     name = "Yuri"
-    versionCode = 30
-    contentWarning = ContentWarning.MIXED
+    versionCode = 31
+    contentWarning = ContentWarning.SAFE
     libVersion = "1.4"
 
     source {
@@ -18,5 +18,7 @@ keiyoushi {
 
     deeplink {
         host("yuri.grass.moe")
+        path("/series/..*")
+        path("/multi/..*")
     }
 }

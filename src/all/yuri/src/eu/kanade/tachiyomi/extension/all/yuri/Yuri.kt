@@ -28,7 +28,7 @@ import kotlin.math.min
 
 @Source
 abstract class Yuri : HttpSource() {
-//    override val name = "Yuri"
+    //    override val name = "Yuri"
 //    override val baseUrl = "https://yuri.grass.moe"
     override val supportsLatest = false
 //    override val lang = "all"
@@ -37,20 +37,24 @@ abstract class Yuri : HttpSource() {
 
     override fun popularMangaRequest(page: Int): Request = GET("$baseUrl/api/all.json")
 
-    override fun fetchPopularManga(page: Int): Observable<MangasPage> = client.newCall(popularMangaRequest(page))
-        .asObservableSuccess()
-        .map { response ->
-            val j = Json.parseToJsonElement(response.body.string()).jsonArray
-            parseManga(j, page - 1)
-        }
+    override fun fetchPopularManga(page: Int): Observable<MangasPage> = client.newCall(popularMangaRequest(page)).asObservableSuccess().map { response ->
+        val j = Json.parseToJsonElement(response.body.string()).jsonArray
+        parseManga(j, page - 1)
+    }
 
-    override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request = GET("$baseUrl/api/all.json")
+    val urlRegex = Regex("yuri\\.grass\\.moe/(series|multi)/([0-9]+)")
 
-    override fun fetchSearchManga(page: Int, query: String, filters: FilterList): Observable<MangasPage> = client.newCall(searchMangaRequest(page, query, filters))
-        .asObservableSuccess()
-        .map { response ->
-            searchMangaParse(response, query, page - 1)
+    override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
+        urlRegex.find(query)?.let { res ->
+            val (type, id) = res.destructured
+            return GET("$baseUrl/api/all/$type/$id")
         }
+        return GET("$baseUrl/api/all.json")
+    }
+
+    override fun fetchSearchManga(page: Int, query: String, filters: FilterList): Observable<MangasPage> = client.newCall(searchMangaRequest(page, query, filters)).asObservableSuccess().map { response ->
+        searchMangaParse(response, query, page - 1)
+    }
 
     override fun chapterListRequest(manga: SManga): Request = GET("$baseUrl/api${manga.url}")
 
@@ -75,11 +79,9 @@ abstract class Yuri : HttpSource() {
         } ?: emptyList()
     }
 
-    override fun fetchPageList(chapter: SChapter): Observable<List<Page>> = client.newCall(pageListRequest(chapter))
-        .asObservableSuccess()
-        .map { response ->
-            pageListParse(response, chapter)
-        }
+    override fun fetchPageList(chapter: SChapter): Observable<List<Page>> = client.newCall(pageListRequest(chapter)).asObservableSuccess().map { response ->
+        pageListParse(response, chapter)
+    }
 
     override fun pageListRequest(chapter: SChapter): Request = GET("$baseUrl/api${chapter.url}")
 
@@ -92,11 +94,9 @@ abstract class Yuri : HttpSource() {
         } ?: emptyList()
     }
 
-    override fun fetchMangaDetails(manga: SManga): Observable<SManga> = client.newCall(GET("$baseUrl/api${manga.url}", headers))
-        .asObservableSuccess()
-        .map { response ->
-            mangaDetailsParse(response)
-        }
+    override fun fetchMangaDetails(manga: SManga): Observable<SManga> = client.newCall(GET("$baseUrl/api${manga.url}", headers)).asObservableSuccess().map { response ->
+        mangaDetailsParse(response)
+    }
 
     override fun mangaDetailsRequest(manga: SManga): Request = GET("$baseUrl/api${manga.url}")
 
@@ -132,28 +132,32 @@ abstract class Yuri : HttpSource() {
 
         val include = ArrayList<String>()
         val exclude = ArrayList<String>()
-        val matcher = Pattern.compile("""((?:-){0,1}(?:\"(?:\\(?:\\\\)*\")+(?:[^\\](?:\\(?:\\\\)*\")+|[^\"])*\"|\"(?:[^\\](?:\\(?:\\\\)*\")+|[^\"])*\"|[^ ]+))""")
-            .matcher(query)
-        while (matcher.find()) {
-            var term = matcher.group().lowercase()
-            var isInclude = true
-            if (term.startsWith("-")) {
-                term = term.drop(1)
-                isInclude = false
-            }
 
-            if (term.length > 1 && term.startsWith("\"") && term.endsWith("\"")) {
-                term = term.drop(1).dropLast(1)
-            }
+        if (urlRegex.find(query) == null) {
+            val matcher =
+                Pattern.compile("""((?:-){0,1}(?:\"(?:\\(?:\\\\)*\")+(?:[^\\](?:\\(?:\\\\)*\")+|[^\"])*\"|\"(?:[^\\](?:\\(?:\\\\)*\")+|[^\"])*\"|[^ ]+))""")
+                    .matcher(query)
+            while (matcher.find()) {
+                var term = matcher.group().lowercase()
+                var isInclude = true
+                if (term.startsWith("-")) {
+                    term = term.drop(1)
+                    isInclude = false
+                }
 
-            term = term.replace("\\\"", "\"")
+                if (term.length > 1 && term.startsWith("\"") && term.endsWith("\"")) {
+                    term = term.drop(1).dropLast(1)
+                }
 
-            if (term.isEmpty()) continue
+                term = term.replace("\\\"", "\"")
 
-            if (isInclude) {
-                include.add(term)
-            } else {
-                exclude.add(term)
+                if (term.isEmpty()) continue
+
+                if (isInclude) {
+                    include.add(term)
+                } else {
+                    exclude.add(term)
+                }
             }
         }
 
@@ -162,8 +166,14 @@ abstract class Yuri : HttpSource() {
 
         for (i in 0 until json.length()) {
             val candidate = json.getString(i)
-            if ((include.isNotEmpty() && !include.all { term -> candidate.contains(term, true) }) ||
-                (exclude.isNotEmpty() && exclude.any { term -> candidate.contains(term, true) })
+            if ((
+                    include.isNotEmpty() && !include.all { term ->
+                        candidate.contains(
+                            term,
+                            true,
+                        )
+                    }
+                    ) || (exclude.isNotEmpty() && exclude.any { term -> candidate.contains(term, true) })
             ) {
                 continue
             }
